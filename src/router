@@ -1,0 +1,10 @@
+import { Link } from "react-router-dom";
+function Navbar(){
+      return (
+    <nav>
+      <Link to="/">Sơ đồ ghế</Link> | 
+      <Link to="/form">Đăng ký</Link> | 
+      <Link to="/admin">Admin</Link>
+    </nav>
+  );
+}
