@@ -68,11 +68,14 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "./firebase";
+import { useSearchParams } from 'react-router-dom';
 
 const SeatMap = ({ isAdmin }) => {
   const [seats, setSeats] = useState([]);
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [highlightedSeatId, setHighlightedSeatId] = useState(null);
+
+  const [searchParams] = useSearchParams();
 //   const [userName, setUserName] = useState("");
 
   // Gọi API lấy dữ liệu ghế
@@ -88,12 +91,17 @@ const SeatMap = ({ isAdmin }) => {
         //   return aNum - bNum;
         // });
         setSeats(data);
+
+          const seatParam = searchParams.get("seat");
+          if (seatParam) {
+            setHighlightedSeatId(seatParam);
+          }
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu ghế:", error);
       }
     };
     fetchSeats(); // Gọi hàm ngay khi component mount
-  }, []);
+  }, [searchParams]);
 
   // Nhóm ghế thành từng hàng (A, B, C,...)
 const groupedSeats = seats.reduce((acc, seat) => {
