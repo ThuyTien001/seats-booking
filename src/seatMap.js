@@ -61,7 +61,7 @@ const SeatMap = () => {
   return (
     <div className="app">
       <h2>Sơ đồ ghế</h2>
-      <div className="seat-grid seat-line">
+      {/* <div className="seat-grid seat-line">
         <div className="seat-grid-container">
           {Object.keys(groupedSeats).map((row) => (
             <div key={row} className="seat-row">
@@ -85,7 +85,31 @@ const SeatMap = () => {
             </div>
           ))}
         </div>
+      </div> */}
+
+      <div className="w-full overflow-x-auto">
+  <div className="inline-block">
+    {Object.keys(groupedSeats).map(row => (
+      <div key={row} className="flex justify-center mb-2">
+        {groupedSeats[row].map(seat => (
+          <div
+            key={seat.id}
+            className={`w-10 h-10 text-sm font-bold rounded-md m-1 text-white text-center leading-10 shadow
+              ${seat.status === "booked" ? "bg-red-500" : ""}
+              ${seat.status === "available" ? "bg-green-500" : ""}
+              ${seat.status === "checkedin" ? "bg-blue-500" : ""}
+              ${seat.id === highlightedSeatId ? "border-2 border-yellow-400" : ""}
+            `}
+            onClick={() => handleSeatClick(seat)}
+          >
+            {seat.SeatId}
+          </div>
+        ))}
       </div>
+    ))}
+  </div>
+</div>
+
 
       {selectedSeat && isAdmin && (
         <div className=" popup bg-white border p-4 rounded shadow-md">
