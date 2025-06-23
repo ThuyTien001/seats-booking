@@ -1,4 +1,4 @@
-.app {
+/* .app {
   font-family: sans-serif;
   padding: 10px;
   text-align: center;
@@ -10,28 +10,10 @@
   grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
   gap: 10px;
   margin-top: 20px;
-  /* grid-template-columns: repeat(10, 40px); */
 
 }
 
 .seat {
-  /* padding: 15px;
-  border-radius: 8px;
-  background: #eee;
-  cursor: pointer;
-  font-weight: bold;
-  background-color: #cfcfcf;
-  border: 1px solid #999;
-  text-align: center;
-  line-height: 40px; */
-
-  /* padding: 15px;
-  border-radius: 8px;
-  font-weight: bold;
-  border: 1px solid #999;
-  text-align: center;
-  line-height: 40px;
-  cursor: pointer; */
 
     width: 50px;
   height: 50px;
@@ -54,61 +36,32 @@
 
 .popup {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
   background: white;
-  border-top: 1px solid #ccc;
+  border: 1px solid #ccc;
   padding: 20px;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
 }
 
-/* .seat-grid {
-  display: grid;
-  grid-template-columns: repeat(10, 40px);
-  gap: 8px;
-  margin-top: 20px;
-  text-align: center;
-} */
 
-/* .seat {
-  width: 40px;
-  height: 40px;
-  background-color: #cfcfcf;
-  border: 1px solid #999;
-  text-align: center;
-  line-height: 40px;
-  cursor: pointer;
-  border-radius: 5px;
-} */
 
 .seat.available {
   background-color: #a0e7a0;
 }
 .seat.booked {
-  background-color: #f47c7c; /* Đỏ */
+  background-color: #f47c7c;
   cursor: not-allowed;
 }
 .seat.checkedin {
-  background-color: #b0b0b0; /* Xám */
+  background-color: #b0b0b0; 
   cursor: not-allowed;
 }
 
 .seat.highlighted {
-  background-color: #f9e79f; /* Vàng */
+  background-color: #f9e79f; 
 }
-
-/* .seat.taken {
-  background-color: #f47c7c;
-  cursor: not-allowed;
-} */
-
-/* .popup {
-  margin-top: 20px;
-  background: #fff;
-  padding: 15px;
-  border: 1px solid #ccc;
-} */
 
 
 
@@ -123,7 +76,7 @@
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
-  min-width: 600px; /* giữ hàng có kích thước giống nhau */
+  min-width: 600px;
   justify-content: center;
 }
 
@@ -131,6 +84,132 @@
 .seat-map {
   display: flex;
   flex-direction: column;
-  align-items: center; /* căn giữa theo chiều ngang */
+  align-items: center;
   margin-top: 20px;
+}
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  text-align: left;
+  min-width: 300px;
+}
+
+.popup h4 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.popup p {
+  margin: 4px 0;
+}
+
+.popup button {
+  margin-right: 8px;
+  padding: 6px 12px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.popup button:hover {
+  opacity: 0.9;
+} */
+
+
+.app {
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.seat-grid-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.seat-row {
+  display: flex;
+  gap: 10px;
+}
+
+.seat {
+  width: 45px;
+  height: 45px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.seat:hover {
+  transform: scale(1.1);
+}
+
+.available {
+  background-color: #4caf50; /* Xanh */
+  color: white;
+}
+
+.booked {
+  background-color: #f44336; /* Đỏ */
+  color: white;
+}
+
+.checkedin {
+  background-color: #2196f3; /* Xanh dương */
+  color: white;
+}
+
+.highlighted {
+  border: 3px solid gold;
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  text-align: left;
+  min-width: 300px;
+}
+
+.popup h4 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.popup p {
+  margin: 4px 0;
+}
+
+.popup button {
+  margin-right: 8px;
+  padding: 6px 12px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.popup button:hover {
+  opacity: 0.9;
 }

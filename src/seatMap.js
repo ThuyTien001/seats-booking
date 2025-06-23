@@ -1,148 +1,318 @@
+// // import React, { useEffect, useState } from "react";
+// // import { collection, getDocs, doc, updateDoc} from "firebase/firestore";
+// // import { db } from './firebase';
+
+// // const SeatMap = ({ isAdmin }) => {
+// //      const [seats, setSeats] = useState([]);
+// //       const [selectedSeat, setSelectedSeat] = useState(null);
+// //       const [userName, setUserName] = useState("");
+// //   const handleSeatClick = (seat) => {
+// //     if (!isAdmin) return;
+
+// //     // show popup thông tin người dùng, nút checkin/hủy
+// //     console.log("Admin clicked seat:", seat);
+// //   };
+// //     useEffect(() => {
+// //         const fetchSeats = async () => {
+// //             const snapshot = await getDocs(collection(db, "seats"));
+// //             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+// //             setSeats(data);
+// //         }
+// //     }, []);
+
+// //   const handleBook = async () => {
+// //     if (selectedSeat && userName) {
+// //       const seatRef = doc(db, "seats", selectedSeat.id);
+// //       await updateDoc(seatRef, { takenBy: userName });
+// //       setSeats(seats.map(s => s.id === selectedSeat.id ? { ...s, takenBy: userName } : s));
+// //       setSelectedSeat(null);
+// //       setUserName("");
+// //     }
+// //   };
+
+// //   return (
+// //     <div className="app">
+// //       <h2>Chọn ghế</h2>
+// //       <div className="seat-grid">
+// //         {seats.map(seat => (
+// //           <div
+// //             key={seat.id}
+// //             className={`seat ${seat.type} ${seat.takenBy ? "taken" : ""}`}
+// //             onClick={() => !seat.takenBy && setSelectedSeat(seat)}
+// //           >
+// //             {seat.SeatId}
+// //           </div>
+// //         ))}
+// //       </div>
+
+// //       {selectedSeat && (
+// //         <div className="popup">
+// //           <h4>Đăng ký ghế: {selectedSeat.SeatId}</h4>
+// //           <input
+// //             type="text"
+// //             placeholder="Tên của bạn"
+// //             value={userName}
+// //             onChange={e => setUserName(e.target.value)}
+// //           />
+// //           <button onClick={handleBook}>Xác nhận</button>
+// //           <button onClick={() => setSelectedSeat(null)}>Hủy</button>
+// //         </div>
+// //       )}
+// //     </div>
+// //   );
+// // };
+// // export default SeatMap;
+
+
+
 // import React, { useEffect, useState } from "react";
-// import { collection, getDocs, doc, updateDoc} from "firebase/firestore";
-// import { db } from './firebase';
+// import { collection, getDocs } from "firebase/firestore";
+// import { db } from "./firebase";
+// import { useSearchParams } from 'react-router-dom';
+// import { doc, updateDoc } from "firebase/firestore";
 
 // const SeatMap = ({ isAdmin }) => {
-//      const [seats, setSeats] = useState([]);
-//       const [selectedSeat, setSelectedSeat] = useState(null);
-//       const [userName, setUserName] = useState("");
+//   const [seats, setSeats] = useState([]);
+//   const [selectedSeat, setSelectedSeat] = useState(null);
+//   const [highlightedSeatId, setHighlightedSeatId] = useState(null);
+//   // const [Admin, setIsAdmin] = useState(false);
+  
+
+//   const [searchParams] = useSearchParams();
+
+//   // Gọi API lấy dữ liệu ghế
+//   useEffect(() => {
+//     const fetchSeats = async () => {
+//       try {
+//         const snapshot = await getDocs(collection(db, "seats"));
+//         const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+//         setSeats(data);
+
+//           const seatParam = searchParams.get("seat");
+//           if (seatParam) {
+//             setHighlightedSeatId(seatParam);
+//           }
+//       } catch (error) {
+//         console.error("Lỗi khi lấy dữ liệu ghế:", error);
+//       }
+//     };
+//     fetchSeats(); // Gọi hàm ngay khi component mount
+//   }, [ searchParams]);
+
+//   // Nhóm ghế thành từng hàng (A, B, C,...)
+// const groupedSeats = seats.reduce((acc, seat) => {
+//   const row = seat.SeatId?.[0]; // Lấy ký tự đầu tiên, ví dụ A, B, C
+//   if (!acc[row]) acc[row] = [];
+//   acc[row].push(seat);
+//   return acc;
+// }, {});
+
+// Object.keys(groupedSeats).forEach(row => {
+//   groupedSeats[row].sort((a, b) => {
+//     const aNum = parseInt(a.SeatId.slice(1));
+//     const bNum = parseInt(b.SeatId.slice(1));
+//     return aNum - bNum;
+//   });
+// });
+//   // Xử lý đặt ghế (cho user)
+// //   const handleBook = async () => {
+// //     if (selectedSeat && userName) {
+// //       try {
+// //         const seatRef = doc(db, "seats", selectedSeat.id);
+// //         await updateDoc(seatRef, { takenBy: userName });
+
+// //         // Cập nhật local state sau khi cập nhật Firebase
+// //         setSeats(seats.map(s =>
+// //           s.id === selectedSeat.id ? { ...s, takenBy: userName } : s
+// //         ));
+
+// //         setSelectedSeat(null);
+// //         setUserName("");
+// //       } catch (error) {
+// //         console.error("Lỗi khi cập nhật ghế:", error);
+// //       }
+// //     }
+// //   };
+
+//   // Xử lý khi admin click vào ghế
 //   const handleSeatClick = (seat) => {
-//     if (!isAdmin) return;
-
-//     // show popup thông tin người dùng, nút checkin/hủy
-//     console.log("Admin clicked seat:", seat);
-//   };
-//     useEffect(() => {
-//         const fetchSeats = async () => {
-//             const snapshot = await getDocs(collection(db, "seats"));
-//             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-//             setSeats(data);
-//         }
-//     }, []);
-
-//   const handleBook = async () => {
-//     if (selectedSeat && userName) {
-//       const seatRef = doc(db, "seats", selectedSeat.id);
-//       await updateDoc(seatRef, { takenBy: userName });
-//       setSeats(seats.map(s => s.id === selectedSeat.id ? { ...s, takenBy: userName } : s));
-//       setSelectedSeat(null);
-//       setUserName("");
+//     if (isAdmin) {
+//       setSelectedSeat(seat);
+//     } else if (!seat.takenBy) {
+//       setSelectedSeat(seat);
 //     }
 //   };
 
 //   return (
 //     <div className="app">
-//       <h2>Chọn ghế</h2>
-//       <div className="seat-grid">
-//         {seats.map(seat => (
-//           <div
-//             key={seat.id}
-//             className={`seat ${seat.type} ${seat.takenBy ? "taken" : ""}`}
-//             onClick={() => !seat.takenBy && setSelectedSeat(seat)}
-//           >
-//             {seat.SeatId}
-//           </div>
-//         ))}
-//       </div>
-
-//       {selectedSeat && (
-//         <div className="popup">
-//           <h4>Đăng ký ghế: {selectedSeat.SeatId}</h4>
-//           <input
-//             type="text"
-//             placeholder="Tên của bạn"
-//             value={userName}
-//             onChange={e => setUserName(e.target.value)}
-//           />
-//           <button onClick={handleBook}>Xác nhận</button>
-//           <button onClick={() => setSelectedSeat(null)}>Hủy</button>
+//       <h2>Sơ đồ ghế</h2>
+//       <div className="seat-grid seat-line">
+//         <div className="seat-grid-container">
+//   {Object.keys(groupedSeats).map(row => (
+//     <div key={row} className="seat-row">
+//       {groupedSeats[row].map(seat => (
+//         <div
+//           key={seat.id}
+//           className={`seat
+//             ${seat.status === "booked" ? "booked" : ""} 
+//             ${seat.status === "available" ? "available" : ""} 
+//             ${seat.status === "checkedin" ? "checkedin" : ""} 
+//             ${seat.id === highlightedSeatId ? "highlighted" : ""}
+//           `}
+//           onClick={() => { console.log("Clicked:", seat.SeatId); handleSeatClick(seat)}}
+//         >
+//           {seat.SeatId}
 //         </div>
-//       )}
+//       ))}
+//     </div>
+//   ))}
+// </div>
+
+//       </div>
+//       {/* {selectedSeat && isAdmin && (
+//         <div className="popup">
+//           <h4>Thông tin ghế: {selectedSeat.SeatId || selectedSeat.id}</h4>
+//           <p>Người đặt: {selectedSeat.takenBy || "Vị trí trống"}</p>
+//           <button onClick={() => alert("Chức năng Checkin hoặc Hủy sắp thêm")}>Thao tác</button>
+//           <button onClick={() => setSelectedSeat(null)}>Đóng</button>
+//         </div>
+//       )} */}
+
+
+//       {selectedSeat && isAdmin && (
+//   <div className="popup bg-white border p-4 rounded shadow-md">
+//     <h4>Thông tin ghế: {selectedSeat.SeatId || selectedSeat.id}</h4>
+//     <p>Người đặt: {selectedSeat?.user?.stringValue || "Vị trí trống"}</p>
+//     <p>Trạng thái: {selectedSeat?.status?.stringValue || "unknown"}</p>
+
+//     <div className="flex gap-2 mt-2">
+//       <button
+//         className="bg-green-500 text-white px-3 py-1 rounded"
+//         onClick={async () => {
+//           try {
+//             const seatRef = doc(db, "seats", selectedSeat.id);
+//             await updateDoc(seatRef, {
+//               status: "checkedin"
+//             });
+//             setSeats(prev =>
+//               prev.map(s =>
+//                 s.id === selectedSeat.id ? { ...s, status: "checkedin" } : s
+//               )
+//             );
+//             alert("Đã check-in!");
+//             setSelectedSeat(null);
+//           } catch (error) {
+//             console.error("Lỗi khi check-in:", error);
+//             alert("Không thể check-in ghế.");
+//           }
+//         }}
+//       >
+//         ✅ Checkin
+//       </button>
+
+//       <button
+//         className="bg-red-500 text-white px-3 py-1 rounded"
+//         onClick={async () => {
+//           try {
+//             const seatRef = doc(db, "seats", selectedSeat.id);
+//             await updateDoc(seatRef, {
+//               status: "available",
+//               user: null,
+//               takenBy: null
+//             });
+//             setSeats(prev =>
+//               prev.map(s =>
+//                 s.id === selectedSeat.id
+//                   ? { ...s, status: "available", user: null, takenBy: null }
+//                   : s
+//               )
+//             );
+//             alert("Đã hủy vé!");
+//             setSelectedSeat(null);
+//           } catch (error) {
+//             console.error("Lỗi khi hủy vé:", error);
+//             alert("Không thể hủy vé.");
+//           }
+//         }}
+//       >
+//         ❌ Hủy vé
+//       </button>
+
+//       <button
+//         className="bg-gray-300 text-black px-3 py-1 rounded"
+//         onClick={() => setSelectedSeat(null)}
+//       >
+//         Đóng
+//       </button>
+//     </div>
+//   </div>
+// )}
+
+
 //     </div>
 //   );
 // };
+
 // export default SeatMap;
 
 
 
 import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from "react-router-dom";
 
-const SeatMap = ({ isAdmin }) => {
+const SeatMap = () => {
   const [seats, setSeats] = useState([]);
   const [selectedSeat, setSelectedSeat] = useState(null);
   const [highlightedSeatId, setHighlightedSeatId] = useState(null);
-
+  const [isAdmin, setIsAdmin] = useState(false);
   const [searchParams] = useSearchParams();
-//   const [userName, setUserName] = useState("");
 
-  // Gọi API lấy dữ liệu ghế
   useEffect(() => {
     const fetchSeats = async () => {
       try {
         const snapshot = await getDocs(collection(db, "seats"));
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        // ✅ Sắp xếp theo số thứ tự ghế
-        // data.sort((a, b) => {
-        //   const aNum = parseInt(a.id?.replace(/[^\d]/g, ''));
-        //   const bNum = parseInt(b.id.replace(/[^\d]/g, ''));
-        //   return aNum - bNum;
-        // });
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
         setSeats(data);
 
-          const seatParam = searchParams.get("seat");
-          if (seatParam) {
-            setHighlightedSeatId(seatParam);
-          }
+        const seatParam = searchParams.get("seat");
+        if (seatParam) {
+          setHighlightedSeatId(seatParam);
+        }
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu ghế:", error);
       }
     };
-    fetchSeats(); // Gọi hàm ngay khi component mount
+
+    fetchSeats();
+
+    // ✅ Kiểm tra quyền admin từ localStorage
+    const stored = localStorage.getItem("isAdmin") === "true";
+    setIsAdmin(stored);
+    console.log("Admin mode:", stored);
   }, [searchParams]);
 
-  // Nhóm ghế thành từng hàng (A, B, C,...)
-const groupedSeats = seats.reduce((acc, seat) => {
-  const row = seat.SeatId?.[0]; // Lấy ký tự đầu tiên, ví dụ A, B, C
-  if (!acc[row]) acc[row] = [];
-  acc[row].push(seat);
-  return acc;
-}, {});
+  const groupedSeats = seats.reduce((acc, seat) => {
+    const row = seat.SeatId?.[0];
+    if (!acc[row]) acc[row] = [];
+    acc[row].push(seat);
+    return acc;
+  }, {});
 
-Object.keys(groupedSeats).forEach(row => {
-  groupedSeats[row].sort((a, b) => {
-    const aNum = parseInt(a.SeatId.slice(1));
-    const bNum = parseInt(b.SeatId.slice(1));
-    return aNum - bNum;
+  Object.keys(groupedSeats).forEach((row) => {
+    groupedSeats[row].sort((a, b) => {
+      const aNum = parseInt(a.SeatId.slice(1));
+      const bNum = parseInt(b.SeatId.slice(1));
+      return aNum - bNum;
+    });
   });
-});
-  // Xử lý đặt ghế (cho user)
-//   const handleBook = async () => {
-//     if (selectedSeat && userName) {
-//       try {
-//         const seatRef = doc(db, "seats", selectedSeat.id);
-//         await updateDoc(seatRef, { takenBy: userName });
 
-//         // Cập nhật local state sau khi cập nhật Firebase
-//         setSeats(seats.map(s =>
-//           s.id === selectedSeat.id ? { ...s, takenBy: userName } : s
-//         ));
-
-//         setSelectedSeat(null);
-//         setUserName("");
-//       } catch (error) {
-//         console.error("Lỗi khi cập nhật ghế:", error);
-//       }
-//     }
-//   };
-
-  // Xử lý khi admin click vào ghế
   const handleSeatClick = (seat) => {
-    if (isAdmin) {
-      setSelectedSeat(seat);
-    } else if (!seat.takenBy) {
+    if (isAdmin || !seat.takenBy) {
       setSelectedSeat(seat);
     }
   };
@@ -151,71 +321,111 @@ Object.keys(groupedSeats).forEach(row => {
     <div className="app">
       <h2>Sơ đồ ghế</h2>
       <div className="seat-grid seat-line">
-        {/* {seats.map(seat => (
-        //   <div
-        //     key={seat.id}
-        //     className={`seat ${seat.takenBy ? "taken" : "available"}`}
-        //     onClick={() => handleSeatClick(seat)}
-        //   >
-        //     {seat.SeatId || seat.id}
-        //   </div>
-        <div
-            key={seat.id}
-            className={`seat 
-                ${seat.status === "booked" ? "booked" : ""} 
-                ${seat.status === "available" ? "available" : ""} 
-                ${seat.status === "checkedin" ? "checkedin" : ""} 
-                ${seat.id === highlightedSeatId ? "highlighted" : ""}
-            `}
-            onClick={() => handleSeatClick(seat)}
-            >
-            {seat.SeatId || seat.id}
-            </div>
-        ))} */}
-
         <div className="seat-grid-container">
-  {Object.keys(groupedSeats).map(row => (
-    <div key={row} className="seat-row">
-      {groupedSeats[row].map(seat => (
-        <div
-          key={seat.id}
-          className={`seat
-            ${seat.status === "booked" ? "booked" : ""} 
-            ${seat.status === "available" ? "available" : ""} 
-            ${seat.status === "checkedin" ? "checkedin" : ""} 
-            ${seat.id === highlightedSeatId ? "highlighted" : ""}
-          `}
-          onClick={() => handleSeatClick(seat)}
-        >
-          {seat.SeatId}
+          {Object.keys(groupedSeats).map((row) => (
+            <div key={row} className="seat-row">
+              {groupedSeats[row].map((seat) => (
+                <div
+                  key={seat.id}
+                  className={`seat
+                    ${seat.status === "booked" ? "booked" : ""} 
+                    ${seat.status === "available" ? "available" : ""} 
+                    ${seat.status === "checkedin" ? "checkedin" : ""} 
+                    ${seat.id === highlightedSeatId ? "highlighted" : ""}
+                  `}
+                  onClick={() => {
+                    console.log("Clicked:", seat.SeatId);
+                    handleSeatClick(seat);
+                  }}
+                >
+                  {seat.SeatId}
+                </div>
+              ))}
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  ))}
-</div>
-
       </div>
 
-      {/* {selectedSeat && !selectedSeat.takenBy && !isAdmin && (
-        <div className="popup">
-          <h4>Đăng ký ghế: {selectedSeat.SeatId || selectedSeat.id}</h4>
-          <input
-            type="text"
-            placeholder="Tên của bạn"
-            value={userName}
-            onChange={e => setUserName(e.target.value)}
-          />
-          <button onClick={handleBook}>Xác nhận</button>
-          <button onClick={() => setSelectedSeat(null)}>Hủy</button>
-        </div>
-      )} */}
-
       {selectedSeat && isAdmin && (
-        <div className="popup">
+        <div className="popup bg-white border p-4 rounded shadow-md">
           <h4>Thông tin ghế: {selectedSeat.SeatId || selectedSeat.id}</h4>
-          <p>Người đặt: {selectedSeat.takenBy || "Vị trí trống"}</p>
-          <button onClick={() => alert("Chức năng Checkin hoặc Hủy sắp thêm")}>Thao tác</button>
-          <button onClick={() => setSelectedSeat(null)}>Đóng</button>
+          <p>
+            Người đặt: 
+            {selectedSeat?.user
+              ? `${selectedSeat.user.name} (${selectedSeat.user.email})`
+              : "Vị trí trống"}
+          </p>
+          <p>
+            Trạng thái: {selectedSeat?.status?.stringValue || selectedSeat?.status || "unknown"}
+          </p>
+
+          <div className="flex gap-2 mt-2">
+            <button
+              className="bg-green-500 text-white px-3 py-1 rounded"
+              onClick={async () => {
+                try {
+                  const seatRef = doc(db, "seats", selectedSeat.id);
+                  await updateDoc(seatRef, {
+                    status: "checkedin",
+                  });
+                  setSeats((prev) =>
+                    prev.map((s) =>
+                      s.id === selectedSeat.id
+                        ? { ...s, status: "checkedin" }
+                        : s
+                    )
+                  );
+                  alert("Đã check-in!");
+                  setSelectedSeat(null);
+                } catch (error) {
+                  console.error("Lỗi khi check-in:", error);
+                  alert("Không thể check-in ghế.");
+                }
+              }}
+            >
+              ✅ Checkin
+            </button>
+
+            <button
+              className="bg-red-500 text-white px-3 py-1 rounded"
+              onClick={async () => {
+                try {
+                  const seatRef = doc(db, "seats", selectedSeat.id);
+                  await updateDoc(seatRef, {
+                    status: "available",
+                    user: null,
+                    takenBy: null,
+                  });
+                  setSeats((prev) =>
+                    prev.map((s) =>
+                      s.id === selectedSeat.id
+                        ? {
+                            ...s,
+                            status: "available",
+                            user: null,
+                            takenBy: null,
+                          }
+                        : s
+                    )
+                  );
+                  alert("Đã hủy vé!");
+                  setSelectedSeat(null);
+                } catch (error) {
+                  console.error("Lỗi khi hủy vé:", error);
+                  alert("Không thể hủy vé.");
+                }
+              }}
+            >
+              ❌ Hủy vé
+            </button>
+
+            <button
+              className="bg-gray-300 text-black px-3 py-1 rounded"
+              onClick={() => setSelectedSeat(null)}
+            >
+              Đóng
+            </button>
+          </div>
         </div>
       )}
     </div>

@@ -4,21 +4,64 @@
 // import './App.css';
 // import AdminLogin from './adminLogin';
 // import SeatMap from "./seatMap";
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate  } from "react-router-dom";
 import SeatMap from "./seatMap";
 import AdminLogin from "./adminLogin";
 import GoogleFormEmbed from "./GoogleFormEmbed";
 import QR from "./qr"; // file xử lý view mode admin/user như bạn viết
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  // ✅ Kiểm tra localStorage khi app vừa tải
+  useEffect(() => {
+    // const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    // if (isAdmin) {
+    //   setIsLoggedIn(true);
+    // }else {
+    //   setIsLoggedIn(false);
+    // }
+
+        const isAdminStored = localStorage.getItem('isAdmin') === 'true';
+    setIsAdmin(isAdminStored);
+  }, []);
+  //   return (
+  //   <Router>
+  //     <Routes>
+  //       <Route path="/" element={<QR />} /> {/* Mặc định: hiển thị sơ đồ hoặc login */}
+  //       <Route path="/form" element={<GoogleFormEmbed />} />
+  //       <Route path="/seats" element={<SeatMap isAdmin={false} />} />
+  //       <Route path="/admin" element={<AdminLogin onLoginSuccess={() => { window.location.href = "/"; }} />} />
+  //     </Routes>
+  //   </Router>
+  // );
 
     return (
     <Router>
       <Routes>
-        <Route path="/" element={<QR />} /> {/* Mặc định: hiển thị sơ đồ hoặc login */}
+        {/* Nếu là admin, tự động vào QR view với quyền admin */}
+        <Route
+          path="/"
+          element={<QR isAdmin={isLoggedIn} />}
+        />
+
+        {/* Form đăng ký từ Google Form */}
         <Route path="/form" element={<GoogleFormEmbed />} />
-        <Route path="/seats" element={<SeatMap isAdmin={false} />} />
-        <Route path="/admin" element={<AdminLogin onLoginSuccess={() => { window.location.href = "/"; }} />} />
+
+        {/* Chỉ xem ghế với tư cách user */}
+        <Route path="/seats" element={<SeatMap isAdmin={true} />} />
+
+        {/* Trang đăng nhập admin */}
+        <Route
+          path="/admin"
+          element={
+            isLoggedIn ? (
+              <Navigate to="/" />
+            ) : (
+              <AdminLogin onLoginSuccess={() => setIsLoggedIn(true)} />
+            )
+          }
+        />
       </Routes>
     </Router>
   );
