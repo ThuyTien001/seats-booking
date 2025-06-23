@@ -61,14 +61,14 @@ const SeatMap = () => {
   return (
     <div className="app">
       <h2>Sơ đồ ghế</h2>
-      {/* <div className="seat-grid seat-line">
-        <div className="seat-grid-container">
+      <div className="w-full overflow-x-auto seat-grid seat-line">
+        <div className="inline-block seat-grid-container">
           {Object.keys(groupedSeats).map((row) => (
-            <div key={row} className="seat-row">
+            <div key={row} className="flex justify-center mb-2 seat-row">
               {groupedSeats[row].map((seat) => (
                 <div
                   key={seat.id}
-                  className={`seat
+                  className={`w-10 h-10 text-sm font-bold rounded-md m-1 text-white text-center leading-10 shadow seat
                     ${seat.status === "booked" ? "booked" : ""} 
                     ${seat.status === "available" ? "available" : ""} 
                     ${seat.status === "checkedin" ? "checkedin" : ""} 
@@ -85,31 +85,7 @@ const SeatMap = () => {
             </div>
           ))}
         </div>
-      </div> */}
-
-      <div className="w-full overflow-x-auto">
-  <div className="inline-block">
-    {Object.keys(groupedSeats).map(row => (
-      <div key={row} className="flex justify-center mb-2">
-        {groupedSeats[row].map(seat => (
-          <div
-            key={seat.id}
-            className={`w-10 h-10 text-sm font-bold rounded-md m-1 text-white text-center leading-10 shadow
-              ${seat.status === "booked" ? "bg-red-500" : ""}
-              ${seat.status === "available" ? "bg-green-500" : ""}
-              ${seat.status === "checkedin" ? "bg-blue-500" : ""}
-              ${seat.id === highlightedSeatId ? "border-2 border-yellow-400" : ""}
-            `}
-            onClick={() => handleSeatClick(seat)}
-          >
-            {seat.SeatId}
-          </div>
-        ))}
       </div>
-    ))}
-  </div>
-</div>
-
 
       {selectedSeat && isAdmin && (
         <div className=" popup bg-white border p-4 rounded shadow-md">
@@ -127,23 +103,47 @@ const SeatMap = () => {
           <div className="flex gap-2 mt-2">
             <button
               className="bg-green-500 text-white px-3 py-1 rounded"
+              // onClick={async () => {
+              //   try {
+              //     const seatRef = doc(db, "seats", selectedSeat.id);
+              //     await updateDoc(seatRef, {
+              //       status: "checkedin",
+              //     });
+              //     setSeats((prev) =>
+              //       prev.map((s) =>
+              //         s.id === selectedSeat.id
+              //           ? { ...s, status: "checkedin" }
+              //           : s
+              //       )
+              //     );
+              //     alert("Đã check-in!");
+              //     setSelectedSeat(null);
+              //   } catch (error) {
+              //     console.error("Lỗi khi check-in:", error);
+              //     alert("Không thể check-in ghế.");
+              //   }
+              // }}
+
               onClick={async () => {
                 try {
                   const seatRef = doc(db, "seats", selectedSeat.id);
                   await updateDoc(seatRef, {
-                    status: "checkedin",
+                    status: "checkedin"
                   });
-                  setSeats((prev) =>
-                    prev.map((s) =>
-                      s.id === selectedSeat.id
-                        ? { ...s, status: "checkedin" }
-                        : s
+
+                  // Cập nhật lại dữ liệu ghế trên giao diện
+                  setSeats(prevSeats =>
+                    prevSeats.map(seat =>
+                      seat.id === selectedSeat.id
+                        ? { ...seat, status: "checkedin" }
+                        : seat
                     )
                   );
-                  alert("Đã check-in!");
+
+                  alert("✅ Đã check-in!");
                   setSelectedSeat(null);
                 } catch (error) {
-                  console.error("Lỗi khi check-in:", error);
+                  console.error("❌ Lỗi khi check-in:", error);
                   alert("Không thể check-in ghế.");
                 }
               }}
