@@ -61,14 +61,14 @@ const SeatMap = () => {
   return (
     <div className="app">
       <h2>Sơ đồ ghế</h2>
-      <div className="seat-grid seat-line">
+      <div className="seat-grid seat-line seat-row flex flex-wrap justify-center gap-2 w-full px-2">
         <div className="seat-grid-container">
           {Object.keys(groupedSeats).map((row) => (
             <div key={row} className="seat-row">
               {groupedSeats[row].map((seat) => (
                 <div
                   key={seat.id}
-                  className={`seat
+                  className={`seat w-9 h-9 text-xs font-bold text-white flex justify-center items-center rounded-md shadow-md
                     ${seat.status === "booked" ? "booked" : ""} 
                     ${seat.status === "available" ? "available" : ""} 
                     ${seat.status === "checkedin" ? "checkedin" : ""} 
