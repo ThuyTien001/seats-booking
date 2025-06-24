@@ -10,6 +10,8 @@ import SeatMap from "./seatMap";
 import AdminLogin from "./adminLogin";
 import GoogleFormEmbed from "./GoogleFormEmbed";
 import QR from "./qr"; // file xử lý view mode admin/user như bạn viết
+import AttendeeList from "./attendeeList";
+import "./index.css"
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -47,6 +49,8 @@ function App() {
 
         {/* Form đăng ký từ Google Form */}
         <Route path="/form" element={<GoogleFormEmbed />} />
+
+        <Route path="/list" element={<AttendeeList />} />
 
         {/* Chỉ xem ghế với tư cách user */}
         <Route path="/seats" element={<SeatMap isAdmin={true} />} />

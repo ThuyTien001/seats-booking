@@ -34,7 +34,7 @@ const SeatMap = () => {
     // ✅ Kiểm tra quyền admin từ localStorage
     const stored = localStorage.getItem("isAdmin") === "true";
     setIsAdmin(stored);
-    console.log("Admin mode:", stored);
+    // console.log("Admin mode:", stored);
   }, [searchParams]);
 
   const groupedSeats = seats.reduce((acc, seat) => {
@@ -62,7 +62,7 @@ const SeatMap = () => {
     <div className="app">
       <h2>Sơ đồ ghế</h2>
       <div className="w-full overflow-x-auto seat-grid seat-line">
-        <div className="inline-block seat-grid-container">
+        <div className="inline-block seat-grid-container min-w-[700px] grid grid-cols-11 gap-2 p-4 ">
           {Object.keys(groupedSeats).map((row) => (
             <div key={row} className="flex justify-center mb-2 seat-row">
               {groupedSeats[row].map((seat) => (
@@ -140,10 +140,10 @@ const SeatMap = () => {
                     )
                   );
 
-                  alert("✅ Đã check-in!");
+                  alert("Đã check-in thành công!");
                   setSelectedSeat(null);
                 } catch (error) {
-                  console.error("❌ Lỗi khi check-in:", error);
+                  console.error("Check-in thất bại:", error);
                   alert("Không thể check-in ghế.");
                 }
               }}
