@@ -64,11 +64,11 @@ const SeatMap = () => {
       <div className="w-full overflow-x-auto seat-grid seat-line">
         <div className="inline-block seat-grid-container min-w-[700px] grid grid-cols-11 gap-2 p-4 ">
           {Object.keys(groupedSeats).map((row) => (
-            <div key={row} className="flex justify-center mb-2 seat-row">
+            <div key={row} className="flex overflow-x-scroll justify-center mb-2 seat-row">
               {groupedSeats[row].map((seat) => (
                 <div
                   key={seat.id}
-                  className={`w-10 h-10 text-sm font-bold rounded-md m-1 text-white text-center leading-10 shadow seat
+                  className={` w-10 h-10 text-sm font-bold rounded-md m-1 text-white text-center leading-10 shadow seat
                     ${seat.status === "booked" ? "booked" : ""} 
                     ${seat.status === "available" ? "available" : ""} 
                     ${seat.status === "checkedin" ? "checkedin" : ""} 
